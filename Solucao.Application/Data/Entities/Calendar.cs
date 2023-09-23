@@ -23,6 +23,7 @@ namespace Solucao.Application.Data.Entities
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public Guid? DriverId { get; set; }
+        public Guid? DriverCollectsId { get; set; }
         public Guid? TechniqueId { get; set; }
         public Guid UserId { get; set; }
         public int TravelOn { get; set; }
