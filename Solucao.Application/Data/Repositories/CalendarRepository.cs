@@ -32,6 +32,7 @@ namespace Solucao.Application.Data.Repositories
                                          .Include(x => x.Client.City)
                                          .Include(x => x.Client)
                                          .Include(x => x.Driver)
+                                         .Include(x => x.DriverCollects)
                                          .Include(x => x.Technique)
                                          .Include(x => x.User)
                                          .Include(x => x.CalendarSpecifications)
@@ -191,7 +192,11 @@ namespace Solucao.Application.Data.Repositories
                     sql = sql.Where(x => x.TechniqueId == techniqueId.Value).ToList();
 
                 if (!string.IsNullOrEmpty(status))
-                    sql = sql.Where(x => x.Status == status).ToList();
+                {
+                    var _status = status.Split(",");
+                    sql = sql.Where(x => _status.Contains(x.Status)).ToList();
+                }
+                    
 
                 return sql.OrderBy(x => x.StartTime);
             }
