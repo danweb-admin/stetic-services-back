@@ -65,8 +65,10 @@ namespace Solucao.Application.Service.Implementations
 
         public async Task<ValidationResult> Update(CalendarViewModel calendar, Guid user)
         {
+            
             ValidationResult result;
             Guid parentId;
+            calendar.Value = calendar.Value.Replace(",", ".");
 
             // Atualiza o registro e inativa a locação
             if (calendar.ParentId != null)
@@ -105,7 +107,7 @@ namespace Solucao.Application.Service.Implementations
 
                 if (!string.IsNullOrEmpty(calendar.StartTime1))
                 {
-                    var start = calendar.Date.ToString("yyyy-MM-dd") + " " + calendar.StartTime1.Replace(":","").Insert(2,":");
+                    var start = calendar.Date.ToString("yyyy-MM-dd") + " " + calendar.StartTime1.Replace(":", "").Insert(2, ":");
                     calendar.StartTime = DateTime.Parse(start);
                 }
 
@@ -117,14 +119,16 @@ namespace Solucao.Application.Service.Implementations
 
                 if (string.IsNullOrEmpty(calendar.Status))
                     calendar.Status = "pending";
-                
+
                 var _calendarAdd = mapper.Map<Calendar>(calendar);
 
                 return await calendarRepository.Add(_calendarAdd);
 
             }
 
-            return null;
+            return ValidationResult.Success;
+            
+            
         }
 
         public async Task<ValidationResult> ValidateLease(DateTime date, Guid clientId, Guid equipamentId, IList<CalendarSpecifications> specifications, string startTime, string endTime)
@@ -373,5 +377,7 @@ namespace Solucao.Application.Service.Implementations
 
             return null;
         }
+
+        
     }
 }

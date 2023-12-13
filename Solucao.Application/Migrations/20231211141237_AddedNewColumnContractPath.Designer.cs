@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Solucao.Application.Data;
 
 namespace Solucao.Application.Migrations
 {
     [DbContext(typeof(SolucaoContext))]
-    partial class SolucaoContextModelSnapshot : ModelSnapshot
+    [Migration("20231211141237_AddedNewColumnContractPath")]
+    partial class AddedNewColumnContractPath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,7 +93,7 @@ namespace Solucao.Application.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TemporaryName")
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("TravelOn")
                         .HasColumnType("int");

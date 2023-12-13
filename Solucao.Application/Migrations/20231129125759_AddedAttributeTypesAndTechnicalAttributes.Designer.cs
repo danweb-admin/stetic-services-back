@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Solucao.Application.Data;
 
 namespace Solucao.Application.Migrations
 {
     [DbContext(typeof(SolucaoContext))]
-    partial class SolucaoContextModelSnapshot : ModelSnapshot
+    [Migration("20231129125759_AddedAttributeTypesAndTechnicalAttributes")]
+    partial class AddedAttributeTypesAndTechnicalAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +51,6 @@ namespace Solucao.Application.Migrations
 
                     b.Property<bool>("ContractMade")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ContractPath")
-                        .HasColumnType("varchar(250)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
@@ -91,7 +90,7 @@ namespace Solucao.Application.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TemporaryName")
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("TravelOn")
                         .HasColumnType("int");
@@ -101,9 +100,6 @@ namespace Solucao.Application.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal");
 
                     b.HasKey("Id");
 
@@ -386,9 +382,9 @@ namespace Solucao.Application.Migrations
                         .HasColumnName("active")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("EquipamentId")
-                        .HasColumnName("equipamentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("createdAt")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ModelFileName")
                         .IsRequired()
@@ -402,9 +398,11 @@ namespace Solucao.Application.Migrations
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnName("updatedAt")
+                        .HasColumnType("datetime");
 
-                    b.HasIndex("EquipamentId");
+                    b.HasKey("Id");
 
                     b.ToTable("Models");
                 });
@@ -426,6 +424,10 @@ namespace Solucao.Application.Migrations
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("createdAt")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("FileAttribute")
                         .IsRequired()
                         .HasColumnName("fileAttribute")
@@ -441,6 +443,10 @@ namespace Solucao.Application.Migrations
                         .HasColumnName("technicalAttribute")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnName("updatedAt")
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
@@ -728,19 +734,10 @@ namespace Solucao.Application.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Solucao.Application.Data.Entities.Model", b =>
-                {
-                    b.HasOne("Solucao.Application.Data.Entities.Equipament", "Equipament")
-                        .WithMany()
-                        .HasForeignKey("EquipamentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Solucao.Application.Data.Entities.ModelAttributes", b =>
                 {
                     b.HasOne("Solucao.Application.Data.Entities.Model", "Model")
-                        .WithMany("ModelAttributes")
+                        .WithMany()
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
