@@ -71,6 +71,12 @@ namespace Solucao.Application.Data.Mappings
 
             builder.Property(c => c.ContractMade)
                 .HasColumnType("bit");
+
+            builder.Property(c => c.Value).
+                HasColumnType("decimal");
+
+            builder.Property(c => c.ContractPath).
+                HasColumnType("varchar(250)");
         }
     }
 }

@@ -19,6 +19,21 @@ namespace Solucao.Application.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Solucao.Application.Data.Entities.AttributeTypes", b =>
+                {
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnName("key")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnName("value")
+                        .HasColumnType("varchar(50)");
+
+                    b.ToTable("AttributeTypes");
+                });
+
             modelBuilder.Entity("Solucao.Application.Data.Entities.Calendar", b =>
                 {
                     b.Property<Guid>("Id")
@@ -34,6 +49,9 @@ namespace Solucao.Application.Migrations
 
                     b.Property<bool>("ContractMade")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ContractPath")
+                        .HasColumnType("varchar(250)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
@@ -84,9 +102,14 @@ namespace Solucao.Application.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("DriverCollectsId");
 
                     b.HasIndex("DriverId");
 
@@ -352,6 +375,80 @@ namespace Solucao.Application.Migrations
                     b.ToTable("EquipamentSpecifications");
                 });
 
+            modelBuilder.Entity("Solucao.Application.Data.Entities.Model", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnName("active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("EquipamentId")
+                        .HasColumnName("equipamentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModelFileName")
+                        .IsRequired()
+                        .HasColumnName("modelFileName")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipamentId");
+
+                    b.ToTable("Models");
+                });
+
+            modelBuilder.Entity("Solucao.Application.Data.Entities.ModelAttributes", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnName("active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AttributeType")
+                        .IsRequired()
+                        .HasColumnName("AttributeType")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("FileAttribute")
+                        .IsRequired()
+                        .HasColumnName("fileAttribute")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnName("modelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TechnicalAttribute")
+                        .IsRequired()
+                        .HasColumnName("technicalAttribute")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModelId");
+
+                    b.ToTable("ModelAttributes");
+                });
+
             modelBuilder.Entity("Solucao.Application.Data.Entities.Person", b =>
                 {
                     b.Property<Guid>("Id")
@@ -483,6 +580,21 @@ namespace Solucao.Application.Migrations
                     b.ToTable("StickyNotes");
                 });
 
+            modelBuilder.Entity("Solucao.Application.Data.Entities.TechnicalAttributes", b =>
+                {
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnName("key")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnName("value")
+                        .HasColumnType("varchar(50)");
+
+                    b.ToTable("TechnicalAttributes");
+                });
+
             modelBuilder.Entity("Solucao.Application.Data.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -536,6 +648,10 @@ namespace Solucao.Application.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Solucao.Application.Data.Entities.Person", "DriverCollects")
+                        .WithMany()
+                        .HasForeignKey("DriverCollectsId");
 
                     b.HasOne("Solucao.Application.Data.Entities.Person", "Driver")
                         .WithMany()
@@ -608,6 +724,24 @@ namespace Solucao.Application.Migrations
                     b.HasOne("Solucao.Application.Data.Entities.Specification", "Specification")
                         .WithMany("EquipamentSpecifications")
                         .HasForeignKey("SpecificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Solucao.Application.Data.Entities.Model", b =>
+                {
+                    b.HasOne("Solucao.Application.Data.Entities.Equipament", "Equipament")
+                        .WithMany()
+                        .HasForeignKey("EquipamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Solucao.Application.Data.Entities.ModelAttributes", b =>
+                {
+                    b.HasOne("Solucao.Application.Data.Entities.Model", "Model")
+                        .WithMany("ModelAttributes")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

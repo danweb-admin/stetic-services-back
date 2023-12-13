@@ -31,6 +31,9 @@ namespace Solucao.Application.Contracts
         public Guid? ParentId { get; set; }
         public int TravelOn { get; set; }
         public bool ContractMade { get; set; }
+        public string Value { get; set; }
+        public string ContractPath { get; set; }
+        public string DownloadFileName { get; set; }
         public User User { get; set; }
         public Person Technique { get; set; }
         public Person Driver { get; set; }

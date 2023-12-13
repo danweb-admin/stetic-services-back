@@ -41,9 +41,25 @@ namespace Solucao.Application.Data.Repositories
 
         }
 
+        public async Task<IEnumerable<Calendar>> GetAllByDayAndConfirmed(DateTime date)
+        {
+            var confirmed = "1";
+
+            return await Db.Calendars
+                        .Include(x => x.Equipament)
+                        .Include(x => x.Client)
+                        .Where(x => x.Date.Date == date && x.Active && x.Status == confirmed)
+                        .OrderBy(x => x.Equipament.Name)
+                        .ToListAsync();
+
+        }
+
         public async Task<Calendar> GetById(Guid id)
         {
-            return await Db.Calendars.FirstOrDefaultAsync(x => x.Id == id);
+            return await Db.Calendars
+                        .Include(x => x.Equipament)
+                        .Include(x => x.Client)
+                        .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<ValidationResult> Add(Calendar calendar)
