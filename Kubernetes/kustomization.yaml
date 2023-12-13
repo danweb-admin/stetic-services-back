@@ -9,4 +9,4 @@ namespace: solucao-laser
 images:
 - name: solucao-api
   newName: williambr2022/solucao-api
-  newTag: c6673d9c53eb956f9c8381e9f57d8f6c718d0fc4
+  newTag: 061c507c420e9546125152855dba65f52ac010de
