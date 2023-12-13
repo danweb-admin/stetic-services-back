@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Solucao.Application.Data;
 
 namespace Solucao.Application.Migrations
 {
     [DbContext(typeof(SolucaoContext))]
-    partial class SolucaoContextModelSnapshot : ModelSnapshot
+    [Migration("20231124224052_AddedModels")]
+    partial class AddedModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Solucao.Application.Data.Entities.AttributeTypes", b =>
-                {
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnName("key")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnName("value")
-                        .HasColumnType("varchar(50)");
-
-                    b.ToTable("AttributeTypes");
-                });
 
             modelBuilder.Entity("Solucao.Application.Data.Entities.Calendar", b =>
                 {
@@ -49,9 +36,6 @@ namespace Solucao.Application.Migrations
 
                     b.Property<bool>("ContractMade")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ContractPath")
-                        .HasColumnType("varchar(250)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
@@ -101,9 +85,6 @@ namespace Solucao.Application.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal");
 
                     b.HasKey("Id");
 
@@ -386,9 +367,9 @@ namespace Solucao.Application.Migrations
                         .HasColumnName("active")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("EquipamentId")
-                        .HasColumnName("equipamentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("createdAt")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ModelFileName")
                         .IsRequired()
@@ -402,51 +383,13 @@ namespace Solucao.Application.Migrations
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnName("updatedAt")
+                        .HasColumnType("datetime");
 
-                    b.HasIndex("EquipamentId");
+                    b.HasKey("Id");
 
                     b.ToTable("Models");
-                });
-
-            modelBuilder.Entity("Solucao.Application.Data.Entities.ModelAttributes", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnName("active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("AttributeType")
-                        .IsRequired()
-                        .HasColumnName("AttributeType")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("FileAttribute")
-                        .IsRequired()
-                        .HasColumnName("fileAttribute")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<Guid>("ModelId")
-                        .HasColumnName("modelId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("TechnicalAttribute")
-                        .IsRequired()
-                        .HasColumnName("technicalAttribute")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModelId");
-
-                    b.ToTable("ModelAttributes");
                 });
 
             modelBuilder.Entity("Solucao.Application.Data.Entities.Person", b =>
@@ -580,21 +523,6 @@ namespace Solucao.Application.Migrations
                     b.ToTable("StickyNotes");
                 });
 
-            modelBuilder.Entity("Solucao.Application.Data.Entities.TechnicalAttributes", b =>
-                {
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnName("key")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnName("value")
-                        .HasColumnType("varchar(50)");
-
-                    b.ToTable("TechnicalAttributes");
-                });
-
             modelBuilder.Entity("Solucao.Application.Data.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -724,24 +652,6 @@ namespace Solucao.Application.Migrations
                     b.HasOne("Solucao.Application.Data.Entities.Specification", "Specification")
                         .WithMany("EquipamentSpecifications")
                         .HasForeignKey("SpecificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Solucao.Application.Data.Entities.Model", b =>
-                {
-                    b.HasOne("Solucao.Application.Data.Entities.Equipament", "Equipament")
-                        .WithMany()
-                        .HasForeignKey("EquipamentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Solucao.Application.Data.Entities.ModelAttributes", b =>
-                {
-                    b.HasOne("Solucao.Application.Data.Entities.Model", "Model")
-                        .WithMany("ModelAttributes")
-                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
