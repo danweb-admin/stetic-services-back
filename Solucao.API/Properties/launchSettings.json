@@ -25,7 +25,7 @@
       "applicationUrl": "https://localhost:8091;http://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        
+        "KeyMD5": ""
       }
     },
     "Docker": {
