@@ -16,10 +16,7 @@ namespace Solucao.Application.Migrations
                 oldType: "varchar(50)",
                 oldNullable: true);
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "DriverCollectsId",
-                table: "Calendars",
-                nullable: true);
+      
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
