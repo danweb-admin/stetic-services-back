@@ -152,8 +152,7 @@ namespace Solucao.Application.Service.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                throw;
+                throw ex;
             }
             
         }
