@@ -56,31 +56,39 @@ namespace Solucao.Application.Service.Implementations
 
         public async Task<ValidationResult> GenerateContract(GenerateContractRequest request)
         {
-            var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
-            var contractPath = Environment.GetEnvironmentVariable("DocsPath");
-
-            var calendar = await calendarRepository.GetById(request.CalendarId);
-
-            var model = await modelRepository.GetByEquipament(calendar.EquipamentId);
-
-            if (model == null)
-                throw new ModelNotFoundException("Modelo de contrato para esse equipamento não encontrado.");
-
-            var contractFileName = FormatNameFile(calendar.Client.Name, calendar.Equipament.Name, calendar.Date);
-
-            var copiedFile = await CopyFileStream(modelPath, contractPath,model.ModelFileName, contractFileName, calendar.Date);
-
-            var result = ExecuteReplace(copiedFile, model, calendar);
-
-            if (result)
+            try
             {
-                calendar.ContractPath = copiedFile;
-                calendar.UpdatedAt = DateTime.Now;
-                calendar.ContractMade = true;
-                await calendarRepository.Update(calendar);
+                var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
+                var contractPath = Environment.GetEnvironmentVariable("DocsPath");
 
-                return ValidationResult.Success;
+                var calendar = await calendarRepository.GetById(request.CalendarId);
+
+                var model = await modelRepository.GetByEquipament(calendar.EquipamentId);
+
+                if (model == null)
+                    throw new ModelNotFoundException("Modelo de contrato para esse equipamento não encontrado.");
+
+                var contractFileName = FormatNameFile(calendar.Client.Name, calendar.Equipament.Name, calendar.Date);
+
+                var copiedFile = await CopyFileStream(modelPath, contractPath, model.ModelFileName, contractFileName, calendar.Date);
+
+                var result = ExecuteReplace(copiedFile, model, calendar);
+
+                if (result)
+                {
+                    calendar.ContractPath = copiedFile;
+                    calendar.UpdatedAt = DateTime.Now;
+                    calendar.ContractMade = true;
+                    await calendarRepository.Update(calendar);
+
+                    return ValidationResult.Success;
+                }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            
 
             return new ValidationResult("Erro para gerar o contrato");
         }
