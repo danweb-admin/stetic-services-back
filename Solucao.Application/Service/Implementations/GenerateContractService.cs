@@ -56,8 +56,7 @@ namespace Solucao.Application.Service.Implementations
 
         public async Task<ValidationResult> GenerateContract(GenerateContractRequest request)
         {
-            try
-            {
+            
                 var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
                 var contractPath = Environment.GetEnvironmentVariable("DocsPath");
 
@@ -83,11 +82,7 @@ namespace Solucao.Application.Service.Implementations
 
                     return ValidationResult.Success;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            
             
 
             return new ValidationResult("Erro para gerar o contrato");
@@ -129,31 +124,26 @@ namespace Solucao.Application.Service.Implementations
 
         private bool ExecuteReplace(string copiedFile, Model model, Calendar calendar)
         {
-            try
+            
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(copiedFile, true))
             {
-                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(copiedFile, true))
+                string docText = null;
+                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                    docText = sr.ReadToEnd();
+
+                foreach (var item in model.ModelAttributes)
                 {
-                    string docText = null;
-                    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                        docText = sr.ReadToEnd();
-
-                    foreach (var item in model.ModelAttributes)
-                    {
-                        Regex regexText = new Regex(item.FileAttribute.Trim());
-                        var valueItem = GetPropertieValue(calendar, item.TechnicalAttribute, item.AttributeType);
-                        docText = regexText.Replace(docText, valueItem);
-                    }
-
-                    using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-                        sw.Write(docText);
-
+                    Regex regexText = new Regex(item.FileAttribute.Trim());
+                    var valueItem = GetPropertieValue(calendar, item.TechnicalAttribute, item.AttributeType);
+                    docText = regexText.Replace(docText, valueItem);
                 }
-                return true;
+
+                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                    sw.Write(docText);
+
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return true;
+            
             
         }
 
