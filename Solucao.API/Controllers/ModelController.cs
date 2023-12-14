@@ -62,7 +62,7 @@ namespace Solucao.API.Controllers
                 var pathToSave = Environment.GetEnvironmentVariable("ModelDocsPath");
                 if (file.Length > 0)
                 {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"').Replace(" ",string.Empty);
                     var fullPath = Path.Combine(pathToSave, fileName);
 
                     if (Directory.Exists(pathToSave))

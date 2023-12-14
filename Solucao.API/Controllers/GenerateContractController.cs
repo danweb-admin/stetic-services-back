@@ -50,7 +50,7 @@ namespace Solucao.API.Controllers
                 return BadRequest(ex.Message);
             }catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
             
         }
