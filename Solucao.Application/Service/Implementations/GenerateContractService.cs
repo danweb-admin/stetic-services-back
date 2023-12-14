@@ -152,7 +152,7 @@ namespace Solucao.Application.Service.Implementations
             }
             catch (Exception ex)
             {
-                return false;
+                throw;
             }
             
         }
