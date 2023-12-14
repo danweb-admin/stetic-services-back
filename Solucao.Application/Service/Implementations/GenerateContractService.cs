@@ -56,34 +56,31 @@ namespace Solucao.Application.Service.Implementations
 
         public async Task<ValidationResult> GenerateContract(GenerateContractRequest request)
         {
-            
-                var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
-                var contractPath = Environment.GetEnvironmentVariable("DocsPath");
+            var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
+            var contractPath = Environment.GetEnvironmentVariable("DocsPath");
 
-                var calendar = await calendarRepository.GetById(request.CalendarId);
+            var calendar = await calendarRepository.GetById(request.CalendarId);
 
-                var model = await modelRepository.GetByEquipament(calendar.EquipamentId);
+            var model = await modelRepository.GetByEquipament(calendar.EquipamentId);
 
-                if (model == null)
-                    throw new ModelNotFoundException("Modelo de contrato para esse equipamento não encontrado.");
+            if (model == null)
+                throw new ModelNotFoundException("Modelo de contrato para esse equipamento não encontrado.");
 
-                var contractFileName = FormatNameFile(calendar.Client.Name, calendar.Equipament.Name, calendar.Date);
+            var contractFileName = FormatNameFile(calendar.Client.Name, calendar.Equipament.Name, calendar.Date);
 
-                var copiedFile = await CopyFileStream(modelPath, contractPath, model.ModelFileName, contractFileName, calendar.Date);
+            var copiedFile = await CopyFileStream(modelPath, contractPath,model.ModelFileName, contractFileName, calendar.Date);
 
-                var result = ExecuteReplace(copiedFile, model, calendar);
+            var result = ExecuteReplace(copiedFile, model, calendar);
 
-                if (result)
-                {
-                    calendar.ContractPath = copiedFile;
-                    calendar.UpdatedAt = DateTime.Now;
-                    calendar.ContractMade = true;
-                    await calendarRepository.Update(calendar);
+            if (result)
+            {
+                calendar.ContractPath = copiedFile;
+                calendar.UpdatedAt = DateTime.Now;
+                calendar.ContractMade = true;
+                await calendarRepository.Update(calendar);
 
-                    return ValidationResult.Success;
-                }
-            
-            
+                return ValidationResult.Success;
+            }
 
             return new ValidationResult("Erro para gerar o contrato");
         }
@@ -124,26 +121,32 @@ namespace Solucao.Application.Service.Implementations
 
         private bool ExecuteReplace(string copiedFile, Model model, Calendar calendar)
         {
-            
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(copiedFile, true))
+            try
             {
-                string docText = null;
-                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                    docText = sr.ReadToEnd();
-
-                foreach (var item in model.ModelAttributes)
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(copiedFile, true))
                 {
-                    Regex regexText = new Regex(item.FileAttribute.Trim());
-                    var valueItem = GetPropertieValue(calendar, item.TechnicalAttribute, item.AttributeType);
-                    docText = regexText.Replace(docText, valueItem);
+                    string docText = null;
+                    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                        docText = sr.ReadToEnd();
+
+                    foreach (var item in model.ModelAttributes)
+                    {
+                        Regex regexText = new Regex(item.FileAttribute.Trim());
+                        var valueItem = GetPropertieValue(calendar, item.TechnicalAttribute, item.AttributeType);
+                        docText = regexText.Replace(docText, valueItem);
+                    }
+
+                    using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                        sw.Write(docText);
+
                 }
-
-                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-                    sw.Write(docText);
-
+                return true;
             }
-            return true;
-            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return false;
+            }
             
         }
 
