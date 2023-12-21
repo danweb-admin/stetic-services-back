@@ -15,8 +15,6 @@ namespace Solucao.Application.Migrations
                 oldClrType: typeof(string),
                 oldType: "varchar(50)",
                 oldNullable: true);
-
-      
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

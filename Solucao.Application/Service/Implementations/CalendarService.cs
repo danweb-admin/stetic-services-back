@@ -42,7 +42,9 @@ namespace Solucao.Application.Service.Implementations
             calendar.Client = null;
             calendar.UserId = user;
             calendar.CreatedAt = DateTime.Now;
-            calendar.Value = calendar.Value.Replace(",", ".");
+
+            if (!string.IsNullOrEmpty(calendar.Value))
+                calendar.Value = calendar.Value.Replace(",", ".");
 
             if (!string.IsNullOrEmpty(calendar.StartTime1))
             {
@@ -69,7 +71,8 @@ namespace Solucao.Application.Service.Implementations
             
             ValidationResult result;
             Guid parentId;
-            calendar.Value = calendar.Value.Replace(",", ".");
+            if (!string.IsNullOrEmpty(calendar.Value))
+                calendar.Value = calendar.Value.Replace(",", ".");
 
             // Atualiza o registro e inativa a locação
             if (calendar.ParentId != null)
