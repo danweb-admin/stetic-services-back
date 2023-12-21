@@ -39,7 +39,7 @@ namespace Solucao.CrossCutting
             services.AddScoped<StateRepository>();
             services.AddScoped<CityRepository>();
             services.AddScoped<SpecificationRepository>();
-            services.AddScoped<EquipamentRepository>();
+            services.AddScoped<IEquipamentRepository,EquipamentRepository>();
             services.AddScoped<EquipamentSpecificationsRepository>();
             services.AddScoped<CalendarRepository>();
             services.AddScoped<ModelRepository>();
