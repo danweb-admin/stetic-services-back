@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Solucao.Application.Contracts;
 using Solucao.Application.Data.Entities;
+using Solucao.Application.Data.Interfaces;
 using Solucao.Application.Data.Repositories;
 using Solucao.Application.Service.Interfaces;
 using System;
@@ -16,10 +17,10 @@ namespace Solucao.Application.Service.Implementations
     public class CalendarService : ICalendarService
     {
         private CalendarRepository calendarRepository;
-        private EquipamentRepository equipamentRepository;
+        private IEquipamentRepository equipamentRepository;
         private SpecificationRepository specificationRepository;
         private readonly IMapper mapper;
-        public CalendarService(CalendarRepository _calendarRepository, IMapper _mapper, SpecificationRepository _specificationRepository, EquipamentRepository _equipamentRepository)
+        public CalendarService(CalendarRepository _calendarRepository, IMapper _mapper, SpecificationRepository _specificationRepository, IEquipamentRepository _equipamentRepository)
         {
             calendarRepository = _calendarRepository;
             mapper = _mapper;
