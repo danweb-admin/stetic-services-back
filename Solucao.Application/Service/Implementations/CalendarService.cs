@@ -16,6 +16,7 @@ namespace Solucao.Application.Service.Implementations
 {
     public class CalendarService : ICalendarService
     {
+
         private CalendarRepository calendarRepository;
         private IEquipamentRepository equipamentRepository;
         private SpecificationRepository specificationRepository;
