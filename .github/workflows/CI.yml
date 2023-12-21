@@ -1,4 +1,4 @@
-name: CD production
+name: Continuos Integration
 
 on:
   push:
