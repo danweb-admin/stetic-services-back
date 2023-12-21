@@ -43,6 +43,9 @@ namespace Solucao.Application.Service.Implementations
             calendar.UserId = user;
             calendar.CreatedAt = DateTime.Now;
 
+            if (!string.IsNullOrEmpty(calendar.Value))
+                calendar.Value = calendar.Value.Replace(",", ".");
+
             if (!string.IsNullOrEmpty(calendar.StartTime1))
             {
                 var start = calendar.Date.ToString("yyyy-MM-dd") + " " + calendar.StartTime1.Insert(2, ":");
@@ -68,7 +71,8 @@ namespace Solucao.Application.Service.Implementations
             
             ValidationResult result;
             Guid parentId;
-            calendar.Value = calendar.Value.Replace(",", ".");
+            if (!string.IsNullOrEmpty(calendar.Value))
+                calendar.Value = calendar.Value.Replace(",", ".");
 
             // Atualiza o registro e inativa a locação
             if (calendar.ParentId != null)
@@ -194,7 +198,7 @@ namespace Solucao.Application.Service.Implementations
             }
         }
 
-        public async Task<IEnumerable<CalendarViewModel>> Schedules(DateTime startDate, DateTime endDate, Guid? clientId, Guid? equipamentId, List<Guid> driverId, Guid? techniqueId, string status)
+        public async Task<IEnumerable<CalendarViewModel>> Schedules(DateTime startDate, DateTime endDate, Guid? clientId, List<Guid> equipamentId, List<Guid> driverId, Guid? techniqueId, string status)
         {
             return mapper.Map<IEnumerable<CalendarViewModel>>(await calendarRepository.Schedules(startDate, endDate, clientId, equipamentId, driverId,techniqueId, status));
         }

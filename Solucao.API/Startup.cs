@@ -94,7 +94,6 @@ namespace Solucao.API
             else
                 connectionString = $"Server={server}, {port};Initial Catalog={database};User ID={user};Password={password}";
 
-            Console.WriteLine("************" + connectionString + "************");
             services.AddDbContext<SolucaoContext>(options =>
                 options.UseSqlServer(connectionString));
         }
@@ -160,12 +159,6 @@ namespace Solucao.API
             });
 
             app.UseRouting();
-
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-                RequestPath = new PathString("/Resources")
-            });
 
             app.UseAuthentication();
 

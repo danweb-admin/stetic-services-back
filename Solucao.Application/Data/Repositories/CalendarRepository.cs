@@ -178,7 +178,7 @@ namespace Solucao.Application.Data.Repositories
         }
 
 
-        public async Task<IEnumerable<Calendar>> Schedules(DateTime startDate, DateTime endDate,  Guid? clientId, Guid? equipamentId, List<Guid> driverId, Guid? techniqueId, string status)
+        public async Task<IEnumerable<Calendar>> Schedules(DateTime startDate, DateTime endDate,  Guid? clientId, List<Guid> equipamentId, List<Guid> driverId, Guid? techniqueId, string status)
         {
             try
             {
@@ -198,8 +198,8 @@ namespace Solucao.Application.Data.Repositories
                     sql = sql.Where(x => x.ClientId == clientId.Value).ToList();
 
 
-                if (equipamentId.HasValue)
-                    sql = sql.Where(x => x.EquipamentId == equipamentId.Value).ToList();
+                if (equipamentId.Any())
+                    sql = sql.Where(x => equipamentId.Contains(x.EquipamentId)).ToList();
 
                 if (driverId.Any())
                     sql = sql.Where(x => x.DriverId != null).Where(x => driverId.Contains(x.DriverId.Value)).ToList();
