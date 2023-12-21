@@ -1,4 +1,4 @@
-name: Continuous Delivery
+name: Continuos Delivery
 
 on:
   pull_request:
@@ -30,17 +30,4 @@ jobs:
         repository: williambr2022/solucao-api
         tags: ${{ github.sha }}, latest
   
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build   
-    steps:
-      - name: build image and push to docker hub
-        uses: docker/build-push-action@v1.1.0
-        with:
-          username: williambr2022
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: williambr2022/solucao-api
-          tags: ${{ github.sha }}, latest
-      
-      
+  
