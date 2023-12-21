@@ -30,4 +30,3 @@ jobs:
         repository: williambr2022/solucao-api
         tags: ${{ github.sha }}, latest
   
-  
