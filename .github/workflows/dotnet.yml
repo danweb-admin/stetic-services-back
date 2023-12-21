@@ -1,6 +1,8 @@
 name: Continuos Delivery
 
 on:
+  push: 
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
