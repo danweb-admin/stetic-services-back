@@ -103,12 +103,11 @@ namespace Solucao.API
         {
             DatabaseManagementService.MigrationInitialisation(app);
 
-            if (env.IsDevelopment())
-            {
+            
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Solucao.API v1"));
-            }
+            
 
             /*INICIO DA CONFIGURAÇÃO - PROMETHEUS*/
             // Custom Metrics to count requests for each endpoint and the method
