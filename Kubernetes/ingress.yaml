@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-hosts
+  namespace: solucao-laser
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-solucao-laser"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - "solucao-laser.api-danweb-softwares.click"
+    secretName: "solucao-laser-tls"
+  rules:
+  - host: solucao-laser.api-danweb-softwares.click
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: solucao-laser-service
+            port: 
+              number: 80
