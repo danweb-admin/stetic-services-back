@@ -4,9 +4,9 @@ resources:
 - solucao-api.dep.yaml
 - solucao-api.svc.yaml
 
-namespace: solucao-laser
+namespace: demo-danweb
 
 images:
-- name: solucao-api
-  newName: williambr2022/solucao-api
+- name: williambr2022/demo-agenda-back
+  newName: williambr2022/demo-agenda-back
   newTag: 9601b7dd062a4f54d47c79ee85affd6689eafb6f

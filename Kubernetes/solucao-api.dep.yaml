@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment # Kubernetes resource kind we are creating
 metadata:
-  name: demo-danweb-api
+  name: demo-agenda-back
   namespace: demo-danweb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-danweb-api
+      app: demo-agenda-back
   template:
     metadata:
       labels:
-        app: demo-danweb-api
+        app: demo-agenda-back
     spec:
       containers:
-        - name: demo-danweb-api
-          image: williambr2022/solucao-api:latest
+        - name: demo-agenda-back
+          image: williambr2022/demo-agenda-back
           ports:
             - containerPort: 80
           imagePullPolicy: Always
