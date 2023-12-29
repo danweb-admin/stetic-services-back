@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: solucao-api
+  name: demo-agenda-back-svc
+  namespace: demo-danweb
   labels:
-    app: solucao-api
+    app: demo-agenda-back
 spec:
-  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 80
   selector:
-    app: solucao-api
+    app: demo-agenda-back
