@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Solucao.Application.AutoMapper;
@@ -21,7 +22,11 @@ namespace Solucao.Tests
 
         private Mock<SolucaoContext> contextMock;
         private Mock<UserRepository> repositoryMock;
+        private Mock<HistoryRepository> historyMock;
+        private Mock<IHttpContextAccessor> httpContextMock;
         private Mock<ILogger<UserRepository>> loggerMock;
+        private Mock<UserRepository> userRepoMock;
+
         private readonly IMapper _mapper;
 
         public UserServiceTests()
@@ -31,9 +36,13 @@ namespace Solucao.Tests
                 cfg.AddProfile(new EntityToViewModelMappingProfile());
                 cfg.AddProfile(new ViewModelToEntityMappingProfile());
             }).CreateMapper();
-
-            contextMock = new Mock<SolucaoContext>();
             loggerMock = new Mock<ILogger<UserRepository>>();
+
+            httpContextMock = new Mock<IHttpContextAccessor>();
+            contextMock = new Mock<SolucaoContext>();
+            userRepoMock = new Mock<UserRepository>(contextMock.Object, loggerMock.Object);
+
+            historyMock = new Mock<HistoryRepository>(contextMock.Object, httpContextMock.Object, userRepoMock.Object);
             repositoryMock = new Mock<UserRepository>(contextMock.Object, loggerMock.Object);
         }
 
@@ -42,7 +51,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             repositoryMock.Setup(repo => repo.GetAll())
                 .ReturnsAsync(new List<User>());
@@ -78,7 +87,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var user = new User
             {
@@ -86,7 +95,9 @@ namespace Solucao.Tests
             };
 
             repositoryMock.Setup(repo => repo.Add(user))
-                .ReturnsAsync(ValidationResult.Success);
+                .ReturnsAsync(new User());
+
+            
 
             // Act
             var result = await userService.Add(user);
@@ -100,7 +111,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var userId = Guid.NewGuid(); 
             var userViewModel = new User
@@ -112,7 +123,7 @@ namespace Solucao.Tests
                 .ReturnsAsync(new User { Id = userId });
 
             repositoryMock.Setup(repo => repo.Update(It.IsAny<User>()))
-                .ReturnsAsync(ValidationResult.Success);
+                .ReturnsAsync(new User());
 
             // Act
             var result = await userService.Update(userViewModel, userId);
@@ -126,7 +137,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var email = "test@example.com";
             var password = "password"; 
@@ -153,7 +164,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var userName = "John Doe"; 
 
@@ -172,7 +183,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var userViewModel = new UserViewModel
             {
@@ -180,7 +191,7 @@ namespace Solucao.Tests
             };
 
             repositoryMock.Setup(repo => repo.Update(It.IsAny<User>()))
-                .ReturnsAsync(ValidationResult.Success);
+                .ReturnsAsync(new User());
 
             // Act
             var result = await userService.ChangeUserPassword(userViewModel, "newPassword");
@@ -194,7 +205,7 @@ namespace Solucao.Tests
         {
             // Arrange
             var mD5ServiceMock = new Mock<IMD5Service>();
-            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object);
+            var userService = new UserService(repositoryMock.Object, _mapper, mD5ServiceMock.Object, historyMock.Object);
 
             var userEmail = "test@example.com"; // Provide a valid userEmail for testing
 

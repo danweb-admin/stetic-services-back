@@ -28,7 +28,7 @@ namespace Solucao.Application.Data.Repositories
             userRepository = _userRepository;
         }
 
-        public async Task Add(string tableName, Guid recordId, string operation)
+        public virtual async Task Add(string tableName, Guid recordId, string operation)
         {
 
             var userName = httpContextAccessor.HttpContext.User?.Identity.Name;
