@@ -56,7 +56,7 @@ namespace Solucao.API.Controllers
             var equipamentIds = new List<Guid>();
 
             if (!string.IsNullOrEmpty(model.DriverList))
-             list = model.DriverList.Split(',').Select(Guid.Parse).ToList();
+                list = model.DriverList.Split(',').Select(Guid.Parse).ToList();
 
             if (!string.IsNullOrEmpty(model.EquipamentList))
                 equipamentIds = model.EquipamentList.Split(',').Select(Guid.Parse).ToList();
