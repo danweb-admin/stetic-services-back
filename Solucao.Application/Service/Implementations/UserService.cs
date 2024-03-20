@@ -1,12 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Solucao.Application.Contracts;
 using Solucao.Application.Data.Entities;
 using Solucao.Application.Data.Repositories;
 using Solucao.Application.Service.Interfaces;
+using Solucao.Application.Utils.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks;
+using HistoryRepository = Solucao.Application.Data.Repositories.HistoryRepository;
 
 namespace Solucao.Application.Service.Implementations
 {
@@ -15,11 +20,14 @@ namespace Solucao.Application.Service.Implementations
         private UserRepository userRepository;
         private readonly IMapper mapper;
         private readonly IMD5Service mD5Service;
-        public UserService(UserRepository _userRepository, IMapper _mapper, IMD5Service _mD5Service)
+        private readonly HistoryRepository history;
+
+        public UserService(UserRepository _userRepository, IMapper _mapper, IMD5Service _mD5Service, HistoryRepository _history)
         {
             userRepository = _userRepository;
             mapper = _mapper;
             mD5Service = _mD5Service;
+            history = _history;
         }
 
         public async Task<IEnumerable<UserViewModel>> GetAll()
@@ -32,12 +40,20 @@ namespace Solucao.Application.Service.Implementations
             return mapper.Map<Task<UserViewModel>>(userRepository.GetById(Id));
         }
 
-        public Task<ValidationResult> Add(User user)
+        public async Task<ValidationResult> Add(User user)
         {
             user.CreatedAt = DateTime.Now;
             user.Password = mD5Service.ReturnMD5(user.Password);
 
-            return userRepository.Add(user);
+            var result = await userRepository.Add(user);
+
+            if (result == null)
+                return new ValidationResult("Houve um problema para criar o Usuário");
+
+            // adiciona a tabela de histórico de alteracao
+            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.Criacao.ToString());
+
+            return ValidationResult.Success;
         }
 
         public async Task<ValidationResult> Update(User user, Guid id)
@@ -47,7 +63,15 @@ namespace Solucao.Application.Service.Implementations
             user.UpdatedAt = DateTime.Now;
             user.Password = user_.Password;
 
-            return await userRepository.Update(user);
+            var result = await userRepository.Update(user);
+
+            if (result == null)
+                return new ValidationResult("Houve um problema para editar o Usuário");
+
+            // adiciona a tabela de histórico de alteracao
+            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.Alteracao.ToString());
+
+            return ValidationResult.Success;
         }
 
         public async Task<UserViewModel> Authenticate(string email, string password)
@@ -58,6 +82,8 @@ namespace Solucao.Application.Service.Implementations
             {
                 if (mD5Service.CompareMD5(password, user.Password))
                 {
+                    await history.Add(TableEnum.User.ToString(), user.Id, OperationEnum.Logou.ToString());
+
                     return mapper.Map<UserViewModel>(user);
                 }
             }
@@ -77,7 +103,16 @@ namespace Solucao.Application.Service.Implementations
             _user.UpdatedAt = DateTime.Now;
             _user.Password = mD5Service.ReturnMD5(newPassword);
 
-            return await userRepository.Update(_user);
+            var result = await userRepository.Update(_user);
+
+            if (result == null)
+                return new ValidationResult("Houve um problema para alteraa a senha do Usuário");
+
+            // adiciona a tabela de histórico de alteracao
+            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.AlteracaoSenha.ToString());
+
+            return ValidationResult.Success;
+
         }
 
         public async Task<UserViewModel> GetByEmail(string email)

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using NetDevPack.Data;
 using Microsoft.Extensions.Logging;
+using Solucao.Application.Utils.Enum;
 
 namespace Solucao.Application.Data.Repositories
 {
@@ -39,35 +40,30 @@ namespace Solucao.Application.Data.Repositories
             return await Db.Users.FirstOrDefaultAsync(x => x.Name == name);
         }
 
-        public virtual async Task<ValidationResult> Add(User user)
+        public virtual async Task<User> Add(User user)
         {
             try
             {
                 await Db.Users.AddAsync(user);
                 Db.SaveChanges();
-                return ValidationResult.Success;
+
+                return user;
             }
             catch (Exception e)
             {
-                logger.LogError(e.StackTrace);
-                return new ValidationResult(e.Message);
+                Console.WriteLine(e);
+                throw;
             }
+            
         }
 
         
-        public virtual async Task<ValidationResult> Update(User user)
+        public virtual async Task<User> Update(User user)
         {
-            try
-            {
-                DbSet.Update(user);
-                await Db.SaveChangesAsync();
-                return ValidationResult.Success;
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e.StackTrace);
-                return new ValidationResult(e.Message);
-            }
+            DbSet.Update(user);
+            await Db.SaveChangesAsync();
+
+            return user;
         }
 
         public virtual async Task<User> GetByEmail(string email)

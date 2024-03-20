@@ -46,6 +46,7 @@ namespace Solucao.CrossCutting
             services.AddScoped<ModelAttributesRepository>();
             services.AddScoped<AttributeTypesRepository>();
             services.AddScoped<TechnicalAttributesRepository>();
+            services.AddScoped<HistoryRepository>();
             services.AddScoped<SolucaoContext>();
 
 

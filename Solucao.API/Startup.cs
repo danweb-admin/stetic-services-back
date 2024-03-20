@@ -81,6 +81,8 @@ namespace Solucao.API
 
             services.AddHttpClient();
 
+            services.AddHttpContextAccessor();
+
             var server = Environment.GetEnvironmentVariable("DbServer");
             var port = Environment.GetEnvironmentVariable("DbPort");
             var user = Environment.GetEnvironmentVariable("DbUser");
