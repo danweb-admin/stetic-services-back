@@ -92,13 +92,18 @@ namespace Solucao.Tests
                 // Provide valid data for testing
             };
 
+            var userViewModel = new UserViewModel
+            {
+                Id = Guid.NewGuid()
+            };
+
             repositoryMock.Setup(repo => repo.Add(user))
                 .ReturnsAsync(new User());
 
             
 
             // Act
-            var result = await userService.Add(user);
+            var result = await userService.Add(user, userViewModel.Id);
 
             // Assert
             Assert.Equal(ValidationResult.Success, result);
@@ -124,7 +129,7 @@ namespace Solucao.Tests
                 .ReturnsAsync(new User());
 
             // Act
-            var result = await userService.Update(userViewModel, userId);
+            var result = await userService.Update(userViewModel, userId, userViewModel.Id);
 
             // Assert
             Assert.Equal(ValidationResult.Success, result);
@@ -192,7 +197,7 @@ namespace Solucao.Tests
                 .ReturnsAsync(new User());
 
             // Act
-            var result = await userService.ChangeUserPassword(userViewModel, "newPassword");
+            var result = await userService.ChangeUserPassword(userViewModel, "newPassword", userViewModel.Id);
 
             // Assert
             Assert.Equal(ValidationResult.Success, result);
