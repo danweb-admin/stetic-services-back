@@ -37,11 +37,9 @@ namespace Solucao.Tests
                 cfg.AddProfile(new ViewModelToEntityMappingProfile());
             }).CreateMapper();
             loggerMock = new Mock<ILogger<UserRepository>>();
-
             httpContextMock = new Mock<IHttpContextAccessor>();
             contextMock = new Mock<SolucaoContext>();
             userRepoMock = new Mock<UserRepository>(contextMock.Object, loggerMock.Object);
-
             historyMock = new Mock<HistoryRepository>(contextMock.Object, httpContextMock.Object, userRepoMock.Object);
             repositoryMock = new Mock<UserRepository>(contextMock.Object, loggerMock.Object);
         }

@@ -55,8 +55,9 @@ namespace Solucao.API.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Type = typeof(ApplicationError))]
         public async Task<IActionResult> PostAsync([FromBody] User model)
         {
-            logger.LogInformation($"{nameof(PostAsync)} | Inicio da chamada - {model.Email}");
-            var result = await userService.Add(model);
+            var userAuthenticated = await userService.GetByName(User.Identity.Name);
+
+            var result = await userService.Add(model,userAuthenticated.Id);
 
             if (result != null)
             {
@@ -75,8 +76,9 @@ namespace Solucao.API.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Type = typeof(ApplicationError))]
         public async Task<IActionResult> PutAsync(Guid id, [FromBody] User model)
         {
-            logger.LogInformation($"{nameof(PutAsync)} | Inicio da chamada - {model.Email}");
-            var result = await userService.Update(model, id);
+            var userAuthenticated = await userService.GetByName(User.Identity.Name);
+
+            var result = await userService.Update(model, id, userAuthenticated.Id);
 
             if (result != null)
             {
@@ -116,7 +118,7 @@ namespace Solucao.API.Controllers
 
             }
 
-            return Ok(await userService.ChangeUserPassword(user,model.Password));
+            return Ok(await userService.ChangeUserPassword(user,model.Password, userAuthenticated.Id));
         }
 
         [HttpPost]

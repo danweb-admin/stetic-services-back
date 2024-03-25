@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.InkML;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using NetDevPack.Data;
 using Solucao.Application.Data.Entities;
 using Solucao.Application.Utils;
+using Solucao.Application.Utils.Enum;
 
 namespace Solucao.Application.Data.Repositories
 {
-	public class HistoryRepository
+    public class HistoryRepository
 	{
         public IUnitOfWork UnitOfWork => Db;
         protected readonly SolucaoContext Db;
@@ -28,21 +27,16 @@ namespace Solucao.Application.Data.Repositories
             userRepository = _userRepository;
         }
 
-        public virtual async Task Add(string tableName, Guid recordId, string operation)
+        public virtual async Task Add(TableEnum table, Guid recordId, OperationEnum operation, Guid userId)
         {
-
-            var userName = httpContextAccessor.HttpContext.User?.Identity.Name;
-            if (string.IsNullOrEmpty(userName))
-                userName = "administrador";
-            var user = await userRepository.GetByName(userName);
 
             var history = new History
             {
                 Id = Guid.NewGuid(),
-                TableName = tableName,
+                TableName = table.ToString(),
                 RecordId = recordId,
-                Operation = operation,
-                UserId = user.Id,
+                Operation = operation.ToString(),
+                UserId = userId,
                 OperationDate = Helpers.DateTimeNow()
 
             };

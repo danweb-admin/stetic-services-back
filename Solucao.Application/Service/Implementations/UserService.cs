@@ -40,7 +40,7 @@ namespace Solucao.Application.Service.Implementations
             return mapper.Map<Task<UserViewModel>>(userRepository.GetById(Id));
         }
 
-        public async Task<ValidationResult> Add(User user)
+        public async Task<ValidationResult> Add(User user, Guid loggedUserId)
         {
             user.CreatedAt = DateTime.Now;
             user.Password = mD5Service.ReturnMD5(user.Password);
@@ -51,12 +51,12 @@ namespace Solucao.Application.Service.Implementations
                 return new ValidationResult("Houve um problema para criar o Usuário");
 
             // adiciona a tabela de histórico de alteracao
-            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.Criacao.ToString());
+            await history.Add(TableEnum.User, result.Id, OperationEnum.Criacao, loggedUserId);
 
             return ValidationResult.Success;
         }
 
-        public async Task<ValidationResult> Update(User user, Guid id)
+        public async Task<ValidationResult> Update(User user, Guid id, Guid loggedUserId)
         {
             var user_ = await userRepository.GetById(id);
 
@@ -69,7 +69,7 @@ namespace Solucao.Application.Service.Implementations
                 return new ValidationResult("Houve um problema para editar o Usuário");
 
             // adiciona a tabela de histórico de alteracao
-            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.Alteracao.ToString());
+            await history.Add(TableEnum.User, result.Id, OperationEnum.Alteracao, loggedUserId);
 
             return ValidationResult.Success;
         }
@@ -82,7 +82,7 @@ namespace Solucao.Application.Service.Implementations
             {
                 if (mD5Service.CompareMD5(password, user.Password))
                 {
-                    await history.Add(TableEnum.User.ToString(), user.Id, OperationEnum.Logou.ToString());
+                    await history.Add(TableEnum.User, user.Id, OperationEnum.Logou,user.Id);
 
                     return mapper.Map<UserViewModel>(user);
                 }
@@ -97,7 +97,7 @@ namespace Solucao.Application.Service.Implementations
             return mapper.Map<UserViewModel>(await userRepository.GetByName(Name));
         }
 
-        public async Task<ValidationResult> ChangeUserPassword(UserViewModel user, string newPassword)
+        public async Task<ValidationResult> ChangeUserPassword(UserViewModel user, string newPassword, Guid loggedUserId)
         {
             var _user = mapper.Map<User>(user);
             _user.UpdatedAt = DateTime.Now;
@@ -109,7 +109,7 @@ namespace Solucao.Application.Service.Implementations
                 return new ValidationResult("Houve um problema para alteraa a senha do Usuário");
 
             // adiciona a tabela de histórico de alteracao
-            await history.Add(TableEnum.User.ToString(), result.Id, OperationEnum.AlteracaoSenha.ToString());
+            await history.Add(TableEnum.User, result.Id, OperationEnum.AlteracaoSenha, loggedUserId);
 
             return ValidationResult.Success;
 

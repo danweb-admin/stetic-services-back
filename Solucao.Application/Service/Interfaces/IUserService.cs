@@ -18,11 +18,11 @@ namespace Solucao.Application.Service.Interfaces
 
         Task<UserViewModel> GetByName(string Name);
 
-        Task<ValidationResult> Add(User user);
+        Task<ValidationResult> Add(User user, Guid loggedUserId);
 
-        Task<ValidationResult> Update(User user, Guid id);
+        Task<ValidationResult> Update(User user, Guid id, Guid loggedUserId);
 
-        Task<ValidationResult> ChangeUserPassword(UserViewModel user, string newPassword);
+        Task<ValidationResult> ChangeUserPassword(UserViewModel user, string newPassword, Guid loggedUserId);
 
         Task<UserViewModel> Authenticate(string email, string password);
 
