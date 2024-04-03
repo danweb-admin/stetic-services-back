@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.Application.Contracts;
 using Solucao.Application.Contracts.Requests;
+using Solucao.Application.Exceptions.Calendar;
 using Solucao.Application.Exceptions.Model;
 using Solucao.Application.Service.Interfaces;
 
@@ -43,16 +44,21 @@ namespace Solucao.API.Controllers
                 if (result != null)
                     return NotFound(result);
                 return Ok(result);
-                
+
             }
             catch (ModelNotFoundException ex)
             {
                 return BadRequest(ex.Message);
-            }catch (Exception ex)
+            }
+            catch (CalendarNoValueException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
-            
+
         }
 
         [HttpGet("download-contract")]

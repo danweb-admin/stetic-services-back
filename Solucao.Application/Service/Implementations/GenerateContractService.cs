@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -59,7 +60,10 @@ namespace Solucao.Application.Service.Implementations
             var modelPath = Environment.GetEnvironmentVariable("ModelDocsPath");
             var contractPath = Environment.GetEnvironmentVariable("DocsPath");
 
-            var calendar = await calendarRepository.GetById(request.CalendarId);
+            var calendar = mapper.Map<CalendarViewModel>(await calendarRepository.GetById(request.CalendarId));
+            calendar.RentalTime = CalculateMinutes(calendar.StartTime.Value, calendar.EndTime.Value);
+            SearchCustomerValue(calendar);
+
 
             var model = await modelRepository.GetByEquipament(calendar.EquipamentId);
 
@@ -77,7 +81,8 @@ namespace Solucao.Application.Service.Implementations
                 calendar.ContractPath = copiedFile;
                 calendar.UpdatedAt = DateTime.Now;
                 calendar.ContractMade = true;
-                await calendarRepository.Update(calendar);
+
+                await calendarRepository.Update(mapper.Map<Calendar>(calendar));
 
                 return ValidationResult.Success;
             }
@@ -119,7 +124,7 @@ namespace Solucao.Application.Service.Implementations
             }
         }
 
-        private bool ExecuteReplace(string copiedFile, Model model, Calendar calendar)
+        private bool ExecuteReplace(string copiedFile, Model model, CalendarViewModel calendar)
         {
             try
             {
@@ -205,7 +210,86 @@ namespace Solucao.Application.Service.Implementations
             }
         }
 
-        
+        private void SearchCustomerValue(CalendarViewModel calendar)
+        {
+            TimeSpan difference = calendar.EndTime.Value - calendar.StartTime.Value;
+            var rentalTime = difference.TotalHours;
+
+            var split = calendar.Client.EquipamentValues.Split("->");
+
+            foreach (var line in split)
+            {
+                if (string.IsNullOrEmpty(line))
+                    continue;
+
+                var strings = line.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                var equipamento = strings[0].Trim();
+
+                if (calendar.Equipament.Name.ToUpper().Contains(equipamento))
+                {
+
+                    for (int i = 0; i < strings.Length; i++)
+                    {
+                        if (i == 0)
+                            continue;
+
+                        var hoursValues = strings[i].Replace("-", "–").Split("–");
+
+                        var hours = hoursValues[0].Trim();
+                        var value = decimal.Parse(hoursValues[1].Trim().Replace(".", "").Replace(",", "."));
+
+                        var hr = int.Parse(Regex.Replace(hours.Trim(), @"[^\d]", ""));
+
+                        if (rentalTime <= hr)
+                        {
+                            if (hoursValues.Length > 2)
+                                calendar.Value = ValuesBySpecification(calendar, hoursValues);
+                            else
+                                calendar.Value = calendar.ValueWithoutSpec = value;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            throw new CalendarNoValueException("Não foi encontrado o valor para a Locação no cadastro do cliente");
+
+        }
+
+        private decimal ValuesBySpecification(CalendarViewModel calendar, string[] hoursValues)
+        {
+            decimal retorno = decimal.Parse(hoursValues[1].Trim().Replace(".", "").Replace(",", "."));
+            var specification = calendar.CalendarSpecifications.Where(x => x.Active);
+
+            calendar.ValueWithoutSpec = retorno;
+
+            for (int i = 2; i < hoursValues.Length; i++)
+            {
+                var ponteiraValor = hoursValues[i];
+                var temp = ponteiraValor.Split("+");
+                var ponteira = temp[0].ToString().Trim();
+                var valor = decimal.Parse(temp[1].Replace(",", ""));
+                if (specification.Any(x => x.Specification.Name.ToUpper().Contains(temp[0].Trim())))
+                {
+                    retorno += valor;
+                    calendar.Additional1 = valor;
+
+                }
+            }
+
+            return retorno;
+        }
+
+        private int CalculateMinutes(DateTime startTime, DateTime endTime)
+        {
+            if (endTime < startTime)
+                throw new ArgumentException("A data final deve ser maior ou igual à data inicial.");
+
+            TimeSpan difference = endTime - startTime;
+            return (int)difference.TotalMinutes;
+        }
+
+
     }
 }
 
