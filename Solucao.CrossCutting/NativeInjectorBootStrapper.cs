@@ -29,6 +29,7 @@ namespace Solucao.CrossCutting
             services.AddScoped<IModelAttributesService, ModelAttributesService>();
             services.AddScoped<IModelConfigurationService, ModelConfigurationService>();
             services.AddScoped<IGenerateContractService, GenerateContractService>();
+            services.AddScoped<IConsumableService, ConsumableService>();
             services.AddScoped<TokenService>();
 
             // Infra
@@ -47,6 +48,7 @@ namespace Solucao.CrossCutting
             services.AddScoped<AttributeTypesRepository>();
             services.AddScoped<TechnicalAttributesRepository>();
             services.AddScoped<HistoryRepository>();
+            services.AddScoped<ConsumableRepository>();
             services.AddScoped<SolucaoContext>();
 
 

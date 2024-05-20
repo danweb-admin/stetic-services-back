@@ -18,7 +18,7 @@ namespace Solucao.API.Controllers
 {
     [Route("api/v1")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ClientsController : ControllerBase
     {
         private readonly IClientService clientService;
@@ -28,6 +28,12 @@ namespace Solucao.API.Controllers
             clientService = _clientService;
         }
 
+        [HttpGet("client/value-by-equipament")]
+        public async Task<decimal> GetValueByEquipament([FromQuery] Guid clientId, Guid equipamentId, string startTime, string endTime)
+        {
+            return await clientService.GetValueByEquipament(clientId,equipamentId,startTime,endTime);
+        }
+
         [HttpGet("client")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(Client))]
         [SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ApplicationError))]
@@ -35,7 +41,7 @@ namespace Solucao.API.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Type = typeof(ApplicationError))]
         public async Task<IEnumerable<ClientViewModel>> GetAllAsync([FromQuery] ClientRequest clientRequest)
         {
-            return await clientService.GetAll(clientRequest.Ativo,clientRequest.Search);
+            return await clientService.GetAll(clientRequest.Ativo, clientRequest.Search);
         }
 
 

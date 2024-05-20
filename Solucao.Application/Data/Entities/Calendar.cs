@@ -29,6 +29,9 @@ namespace Solucao.Application.Data.Entities
         public int TravelOn { get; set; }
         public bool ContractMade { get; set; }
         public decimal Value { get; set; }
+        public decimal TotalValue { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Freight { get; set; }
         public int RentalTime { get; set; }
         public string ContractPath { get; set; }
         public User User { get; set; }
@@ -38,5 +41,9 @@ namespace Solucao.Application.Data.Entities
         public Client Client { get; set; }
         public Equipament Equipament { get; set; }
         public IList<CalendarSpecifications> CalendarSpecifications { get; set; }
+        public IList<CalendarEquipamentConsumable> CalendarEquipamentConsumables { get; set; }
+        public IList<CalendarSpecificationConsumables> CalendarSpecificationConsumables { get; set; }
+
+
     }
 }

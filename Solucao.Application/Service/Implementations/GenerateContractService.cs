@@ -19,7 +19,9 @@ using Solucao.Application.Data.Repositories;
 using Solucao.Application.Exceptions.Calendar;
 using Solucao.Application.Exceptions.Model;
 using Solucao.Application.Service.Interfaces;
+using Spire.Doc;
 using Calendar = Solucao.Application.Data.Entities.Calendar;
+
 
 namespace Solucao.Application.Service.Implementations
 {
@@ -73,6 +75,13 @@ namespace Solucao.Application.Service.Implementations
             var contractFileName = FormatNameFile(calendar.Client.Name, calendar.Equipament.Name, calendar.Date);
 
             var copiedFile = await CopyFileStream(modelPath, contractPath,model.ModelFileName, contractFileName, calendar.Date);
+
+            string docxFilePath = copiedFile;
+            string pdfFilePath = contractPath + "teste.pdf";
+
+            ConvertDocxToPdf(docxFilePath, pdfFilePath);
+
+            Console.WriteLine("Conversão concluída!");
 
             var result = ExecuteReplace(copiedFile, model, calendar);
 
@@ -289,6 +298,15 @@ namespace Solucao.Application.Service.Implementations
             return (int)difference.TotalMinutes;
         }
 
+        private void ConvertDocxToPdf(string docxFilePath, string pdfFilePath)
+        {
+            // Carregar documento DOCX
+            Document doc = new Document();
+            doc.LoadFromFile(docxFilePath);
+
+            // Salvar como PDF
+            doc.SaveToFile(pdfFilePath, FileFormat.PDF);
+        }
 
     }
 }

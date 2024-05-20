@@ -25,6 +25,13 @@ namespace Solucao.Application.AutoMapper
             CreateMap<Model, ModelViewModel>();
             CreateMap<ModelAttributes, ModelAttributeViewModel>();
 
+            CreateMap<Consumable, ConsumableViewModel>();
+            CreateMap<EquipamentConsumable, EquipamentConsumableViewModel>();
+            CreateMap<CalendarEquipamentConsumable, CalendarEquipamentConsumablesViewModel>();
+            CreateMap<CalendarSpecificationConsumables, CalendarSpecificationConsumablesViewModel>();
+
+
+
         }
 
 

@@ -73,7 +73,16 @@ namespace Solucao.Application.Data.Mappings
                 .HasColumnType("bit");
 
             builder.Property(c => c.Value).
-                HasColumnType("decimal");
+                HasColumnType("decimal(18,2)");
+
+            builder.Property(c => c.Discount).
+                HasColumnType("decimal(18,2)");
+
+            builder.Property(c => c.Freight).
+                HasColumnType("decimal(18,2)");
+
+            builder.Property(c => c.TotalValue).
+                HasColumnType("decimal(18,2)");
 
             builder.Property(c => c.ContractPath).
                 HasColumnType("varchar(250)");
