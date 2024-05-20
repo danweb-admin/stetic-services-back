@@ -4,9 +4,9 @@ resources:
 - solucao-api.dep.yaml
 - solucao-api.svc.yaml
 
-namespace: demo-danweb
+namespace: stetic-services
 
 images:
-- name: williambr2022/demo-agenda-back
-  newName: williambr2022/demo-agenda-back
+- name: williambr2022/stetic-services-back
+  newName: williambr2022/stetic-services-back
   newTag: 7ba721cedc882b0dbdbe49f04b5181f4d1beab76

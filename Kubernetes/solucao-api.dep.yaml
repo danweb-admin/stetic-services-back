@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment # Kubernetes resource kind we are creating
 metadata:
-  name: demo-agenda-back
-  namespace: demo-danweb
+  name: stetic-services-back
+  namespace: stetic-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-agenda-back
+      app: stetic-services-back
   template:
     metadata:
       labels:
-        app: demo-agenda-back
+        app: stetic-services-back
     spec:
       containers:
-        - name: demo-agenda-back
-          image: williambr2022/demo-agenda-back
+        - name: stetic-services-back
+          image: williambr2022/stetic-services-back
           ports:
             - containerPort: 80
           imagePullPolicy: Always
@@ -45,30 +45,9 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: key_md5
-            - name: DocsPath
-              valueFrom:
-                configMapKeyRef:
-                  name: configuration
-                  key: docs_path
-            - name: ModelDocsPath
-              valueFrom:
-                configMapKeyRef:
-                  name: configuration
-                  key: model_docs_path
             - name: Password
               valueFrom:
                 secretKeyRef:
                   name: secret
                   key: password
-          volumeMounts:
-          - name: contracts-storage
-            mountPath: /var/opt/demo-danweb/contratos
-          - name: models-storage
-            mountPath: /var/opt/demo-danweb/modelos
-      volumes:
-      - name: contracts-storage
-        persistentVolumeClaim:
-          claimName: contracts-data
-      - name: models-storage
-        persistentVolumeClaim:
-          claimName: models-data
+          
