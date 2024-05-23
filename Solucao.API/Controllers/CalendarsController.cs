@@ -33,12 +33,18 @@ namespace Solucao.API.Controllers
             logger = _logger;
         }
 
+        [HttpGet("calendar/get-all")]
+        public async Task<IEnumerable<CalendarViewModel>> GetAllAsync([FromQuery] CalendarRequest model)
+        {
+            return await calendarService.GetAll(model.Date);
+        }
+
         [HttpGet("calendar")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(Calendar))]
         [SwaggerResponse((int)HttpStatusCode.BadRequest, Type = typeof(ApplicationError))]
         [SwaggerResponse((int)HttpStatusCode.Conflict, Type = typeof(ApplicationError))]
         [SwaggerResponse((int)HttpStatusCode.NotFound, Type = typeof(ApplicationError))]
-        public async Task<IEnumerable<EquipamentList>> GetAllAsync([FromQuery] CalendarRequest model)
+        public async Task<IEnumerable<EquipamentList>> GetAllByDateAsync([FromQuery] CalendarRequest model)
         {
             logger.LogInformation($"{nameof(CalendarsController)} -{nameof(GetAllAsync)} | Inicio da chamada");
             return await calendarService.GetAllByDate(model.Date);
