@@ -4,8 +4,8 @@ metadata:
   name: configuration
   namespace: stetic-services
 data:
-  db_user: "SA"
-  database: "SteticServices"
+  db_user: "sa"
+  database: "SteticDB"
   db_port: "1433"
   db_server: "mssql-deploy.rcc-manager.svc.cluster.local"
   key_md5: "QmVsbGFTa2luQDIwMjM="
