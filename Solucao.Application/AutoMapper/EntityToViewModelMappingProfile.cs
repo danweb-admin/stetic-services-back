@@ -19,8 +19,8 @@ namespace Solucao.Application.AutoMapper
             CreateMap<Specification, SpecificationViewModel>();
             CreateMap<Equipament, EquipamentViewModel>();
             CreateMap<Calendar, CalendarViewModel>()
-                .ForMember(dest => dest.ContractPath, opt => opt.ConvertUsing(new MarkDownConverter()))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(x => x.Value.ToString("n2").Replace(".",",")));
+                .ForMember(dest => dest.ContractPath, opt => opt.ConvertUsing(new MarkDownConverter()));
+                //.ForMember(dest => dest.Value, opt => opt.MapFrom(x => x.Value.ToString("n2").Replace(".",",")));
             CreateMap<StickyNote, StickyNoteViewModel>();
             CreateMap<Model, ModelViewModel>();
             CreateMap<ModelAttributes, ModelAttributeViewModel>();
