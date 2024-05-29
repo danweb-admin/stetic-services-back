@@ -7,6 +7,9 @@ resources:
 namespace: stetic-services
 
 images:
+- name: williambr2022/stetic-services
+  newName: williambr2022/stetic-services-back
+  newTag: 88ae5aab91b90cb3b609a2ee3f1830c5081ff549
 - name: williambr2022/stetic-services-back
   newName: williambr2022/stetic-services-back
   newTag: 7ba721cedc882b0dbdbe49f04b5181f4d1beab76
